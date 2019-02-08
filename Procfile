@@ -1,0 +1,1 @@
+web: gunicorn oppey_ml_api.wsgi
