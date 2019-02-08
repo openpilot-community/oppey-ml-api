@@ -32,7 +32,7 @@ class ApiChatView(View):
                 'The attribute "text" is required.'
             ]
           }, status=400)
-
+        
         response = oppey_chatbot.get_response(input_data)
 
         response_data = response.serialize()

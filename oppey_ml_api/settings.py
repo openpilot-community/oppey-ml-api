@@ -4,6 +4,9 @@ import dotenv
 import dj_database_url
 import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from chatterbot import ChatBot
+from chatterbot.comparisons import levenshtein_distance
+from chatterbot.response_selection import get_first_response
 
 
 # Quick-start development settings - unsuitable for production
@@ -51,8 +54,8 @@ CHATTERBOT = {
     'logic_adapters': [
         {
             "import_path": "chatterbot.logic.BestMatch",
-            "statement_comparison_function": "chatterbot.comparisons.levenshtein_distance",
-            "response_selection_method": "chatterbot.response_selection.get_first_response"
+            "statement_comparison_function": levenshtein_distance,
+            "response_selection_method": get_first_response
         }
     ],
     'filters': [
