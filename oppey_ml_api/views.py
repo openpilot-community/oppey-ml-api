@@ -18,9 +18,14 @@ class OppeyMLApiView(View):
     Provide an API endpoint to interact with OppeyML.
     """
     oppey = ChatBot(**settings.CHATTERBOT)
-    trainer = ListTrainer(oppey)
-    trainer.train("chatterbot.corpus.english")
 
+    def train(self, request, *args, **kwargs):
+      trainer = ListTrainer(self.oppey)
+      trainer.train("chatterbot.corpus.english")
+      return JsonResponse({
+        'message': 'Oppey has been successfully trained.'
+      }, status=200)
+      
     def post(self, request, *args, **kwargs):
         """
         Return a response to the statement in the posted data.

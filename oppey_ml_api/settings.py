@@ -1,5 +1,6 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import dotenv
 import dj_database_url
 import django_heroku
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -71,16 +72,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oppey_ml_api.wsgi.application'
 
-
+django_heroku.settings(locals())
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {}
-db_settings = dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=600)
-print("db_settings: {0}".format(db_settings.__dir__))
-DATABASES['default'] = db_settings
-
-
+# print("db_url: {0}".format(os.environ.get("DATABASE_URL")))
+# db_settings = dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=600)
+# print("db_settings: {0}".format(db_settings))
+# DATABASES['default'] = db_settings
+locals()['DATABASES']['default'] = dj_database_url.config(conn_max_age=django_heroku.MAX_CONN_AGE)
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -106,4 +107,3 @@ STATICFILES_DIRS = (
         'static',
     ),
 )
-django_heroku.settings(locals())
