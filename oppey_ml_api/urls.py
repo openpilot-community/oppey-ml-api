@@ -1,3 +1,5 @@
+from django.conf.urls.static import static
+from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from oppey_ml_api.views.app import AppView
@@ -8,4 +10,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^api/chat/', ApiChatView.as_view(), name='chat'),
     url(r'^api/train/', ApiTrainView.as_view(), name='train'),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
