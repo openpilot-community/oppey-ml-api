@@ -3,6 +3,7 @@ import json
 from django.views.generic.base import TemplateView
 from django.views.generic import View
 from django.http import JsonResponse
+import re
 from chatterbot.ext.django_chatterbot import settings
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
@@ -52,13 +53,24 @@ class ApiTrainView(View):
     
     def get(self, request, *args, **kwargs):
       print("Training Oppey from latest messages...")
-      messages_query = DiscordMessages.objects.order_by('-created_at')[:5]
-      messages = messages_query.values_list('content', flat=True)
-      messages = list(messages)
-      print()
+      messages_query = DiscordMessages.objects.filter(trained=False).order_by('created_at')
+      # messages = messages_query.values_list('content', flat=True)
+      messages_to_train = []
+      
       trainer = ListTrainer(oppey_chatbot)
-      trainer.train(messages)
+      
+      for message in messages_query:
+        message.trained = True
+        
+        message_content = re.sub(r'\<\@\![0-9]+\>', '', message.content)
+        message_content = re.sub(r'\<\@\[0-9]+\>', '', message.content)
+        # message.save()
+        message_content = ' '.join(message_content.split())
+        message_content = message_content.replace(' ,',',')
+        messages_to_train.append(message_content)
+      print(messages_to_train)
+      trainer.train(messages_to_train)
       return JsonResponse({
         'message': 'Oppey has been successfully trained.',
-        'trained': messages
+        'trained': len(messages_to_train)
       }, status=200)

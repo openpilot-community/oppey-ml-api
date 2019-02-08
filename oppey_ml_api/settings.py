@@ -36,9 +36,15 @@ INSTALLED_APPS = (
 
 CHATTERBOT = {
     'name': 'Oppey ML',
+    'preprocessors': [
+        'chatterbot.preprocessors.clean_whitespace'
+    ],
     'logic_adapters': [
         'chatterbot.logic.MathematicalEvaluation',
         'chatterbot.logic.BestMatch'
+    ],
+    'filters': [
+      'filters.get_recent_repeated_responses'
     ]
 }
 

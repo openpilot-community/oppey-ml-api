@@ -10,6 +10,7 @@ class DiscordMessages(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     jump_url = models.CharField(max_length=255, blank=True, null=True)
+    trained = models.BooleanField(blank=False,null=False,default=False)
 
     class Meta:
         managed = False
