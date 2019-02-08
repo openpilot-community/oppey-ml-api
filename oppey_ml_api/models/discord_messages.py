@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 
 class DiscordMessages(models.Model):
@@ -6,7 +7,7 @@ class DiscordMessages(models.Model):
     discord_channel_id = models.CharField(max_length=255)
     discord_user = models.ForeignKey('DiscordUsers', models.DO_NOTHING, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
-    attachment_ids = models.TextField(blank=True, null=True)  # This field type is a guess.
+    attachment_ids = JSONField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     jump_url = models.CharField(max_length=255, blank=True, null=True)
