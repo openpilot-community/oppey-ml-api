@@ -17,6 +17,7 @@ django-inspectdb-refactor = "*"
 django-dotenv = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
+gunicorncd = "*"
 
 [requires]
 python_version = "3.7"
