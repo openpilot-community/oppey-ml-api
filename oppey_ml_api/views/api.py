@@ -7,7 +7,7 @@ import re
 from django.db import transaction
 from chatterbot.ext.django_chatterbot import settings
 from chatterbot import ChatBot
-from chatterbot.trainers import Trainer, ListTrainer, ChatterBotCorpusTrainer
+from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
 from oppey_ml_api.models import DiscordChannels, DiscordMessages
 import logging
 logging.basicConfig(level=logging.INFO)
