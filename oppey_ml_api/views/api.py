@@ -7,12 +7,13 @@ import re
 from django.db import transaction
 from chatterbot.ext.django_chatterbot import settings
 from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+from chatterbot.trainers import Trainer, ListTrainer, ChatterBotCorpusTrainer
 from oppey_ml_api.models import DiscordChannels, DiscordMessages
 import logging
 logging.basicConfig(level=logging.INFO)
 chat_bot_instances = {}
 chat_bot = ChatBot(**settings.CHATTERBOT)
+
 class ApiChatView(View):
     """
     Provide an API endpoint to interact with OppeyML.
@@ -62,35 +63,35 @@ class ApiTrainView(View):
     def get(self, request, *args, **kwargs):
       chat_bot = ChatBot(**settings.CHATTERBOT)
       print("Training Oppey from latest messages...")
-      # messages_query = DiscordMessages.objects.select_for_update().filter(trained=False).order_by('discord_channel_id','created_at')
+      messages_query = DiscordMessages.objects.select_for_update().filter(trained=False).order_by('discord_channel_id','created_at')
       print("Done querying data...")
       # messages = messages_query.values_list('content', flat=True)
       messages_to_train = []
       convo_trainer = ChatterBotCorpusTrainer(chat_bot)
-      # trainer = ListTrainer(chat_bot)
+      trainer = ListTrainer(chat_bot)
       convo_trainer.train(
         "chatterbot.corpus.english.greetings",
         "chatterbot.corpus.english.conversations")
-      # with transaction.atomic():
-      #   print("Created ListTrainer...")
-      #   for message in messages_query:
-      #     print("Transforming message...{0}".format(message.id))
-      #     message.trained = True
-      #     message_content = message.content
-      #     if len(message_content):
-      #       message_content = re.sub(r'\<\@\![0-9]+\>', '', message_content)
-      #       message_content = re.sub(r'\<\@[0-9]+\>', '', message_content)
+      with transaction.atomic():
+        print("Created ListTrainer...")
+        for message in messages_query:
+          print("Transforming message...{0}".format(message.id))
+          message.trained = True
+          message_content = message.content
+          if len(message_content):
+            message_content = re.sub(r'\<\@\![0-9]+\>', '', message_content)
+            message_content = re.sub(r'\<\@[0-9]+\>', '', message_content)
           
-      #     if message.attachment_ids.get('0'):
-      #       message_content = message_content + " " + message.attachment_ids.get('0').get('url')
-      #     message_content = ' '.join(message_content.split())
-      #     message_content = message_content.replace(' ,',',')
+          if message.attachment_ids.get('0'):
+            message_content = message_content + " " + message.attachment_ids.get('0').get('url')
+          message_content = ' '.join(message_content.split())
+          message_content = message_content.replace(' ,',',')
 
-      #     print("Appending message to array...{0}".format(message.id))
-      #     messages_to_train.append(message_content)
+          print("Appending message to array...{0}".format(message.id))
+          messages_to_train.append(message_content)
       # print("Now training ... {0}".format(len(messages_to_train)))
-      # trainer.train(messages_to_train)
-      # messages_query.update(trained=True)
+      messages_query.update(trained=True)
+      trainer.train(messages_to_train)
       return JsonResponse({
         'message': 'Oppey has been successfully trained.',
         'trained': len(messages_to_train)
