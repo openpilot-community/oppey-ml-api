@@ -8,10 +8,11 @@ from django.db import transaction
 from chatterbot.ext.django_chatterbot import settings
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
-from oppey_ml_api.models import DiscordMessages
+from oppey_ml_api.models import DiscordChannels, DiscordMessages
 import logging
 logging.basicConfig(level=logging.INFO)
 chat_bot_instances = {}
+chat_bot = ChatBot(**settings.CHATTERBOT)
 class ApiChatView(View):
     """
     Provide an API endpoint to interact with OppeyML.
@@ -37,18 +38,9 @@ class ApiChatView(View):
                 'The attribute "channel" is required.'
             ]
           }, status=400)
-        new_settings = {
-          'name': input_data.get('channel')
-        }
-        new_settings = {
-          **new_settings,
-          **settings.CHATTERBOT
-        }
-        if not (chat_bot_instances.get(input_data.get('channel'))):
-          chat_bot = ChatBot(**new_settings)
-        else:
-          chat_bot = chat_bot_instances.get(input_data.get('channel'))
-        response = chat_bot.get_response(input_data)
+        
+        
+        response = chat_bot.get_response(input_data, conversation=input_data.get('channel'))
 
         response_data = response.serialize()
 
@@ -98,7 +90,7 @@ class ApiTrainView(View):
       #     messages_to_train.append(message_content)
       # print("Now training ... {0}".format(len(messages_to_train)))
       # trainer.train(messages_to_train)
-      messages_query.update(trained=True)
+      # messages_query.update(trained=True)
       return JsonResponse({
         'message': 'Oppey has been successfully trained.',
         'trained': len(messages_to_train)

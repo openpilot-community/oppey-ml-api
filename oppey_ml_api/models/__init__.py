@@ -15,6 +15,7 @@ from oppey_ml_api.models.discord_settings import DiscordSettings
 from oppey_ml_api.models.discord_textChannels import DiscordTextchannels
 from oppey_ml_api.models.discord_user_repositories import DiscordUserRepositories
 from oppey_ml_api.models.discord_user_vehicles import DiscordUserVehicles
+from oppey_ml_api.models.discord_channels import DiscordChannels
 from oppey_ml_api.models.discord_users import DiscordUsers
 from oppey_ml_api.models.events import Events
 from oppey_ml_api.models.follows import Follows

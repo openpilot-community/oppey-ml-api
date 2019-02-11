@@ -47,7 +47,7 @@ INSTALLED_APPS = (
 # OppeyML settings
 
 CHATTERBOT = {
-    'name': 'Oppey ML',
+    'name': 'Oppey',
     'preprocessors': [
         'chatterbot.preprocessors.clean_whitespace'
     ],
